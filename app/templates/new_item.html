@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="d-flex align-items-center mb-4">
+            <a href="{{ url_for('main.market') }}" class="text-decoration-none text-primary-brown fs-4 me-3">&larr;</a>
+            <h2 class="m-0">Post a Listing</h2>
+        </div>
+
+        <div class="card p-4">
+            <form method="POST" action="" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label class="form-label">Item Photo</label>
+                    <input class="form-control" type="file" name="image" accept="image/*">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Title</label>
+                    <input type="text" class="form-control" name="title" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Price</label>
+                    <input type="number" step="0.01" class="form-control" name="price" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" rows="4" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Publish Item</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

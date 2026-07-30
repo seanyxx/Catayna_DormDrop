@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-cream: #FDFBF7;
+    --surface-beige: #F4EFEA;
+    --primary-brown: #946B45;
+    --hover-brown: #7A5736;
+    --text-dark: #3E2B1C;
+    --text-muted: #857365;
+    --border-soft: #E6DCD1;
+}
+
+body {
+    background-color: var(--bg-cream);
+    color: var(--text-dark);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 90px;
+}
+
+h1, h2, h3, h4, .brand-text {
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+}
+
+.form-control, .form-select {
+    background-color: #FFFFFF;
+    border: 1.5px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 1rem;
+    color: var(--text-dark);
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary-brown);
+    box-shadow: 0 0 0 4px rgba(148, 107, 69, 0.1);
+    outline: none;
+}
+
+.form-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+}
+
+.btn-primary {
+    background-color: var(--primary-brown);
+    border: none;
+    color: #FFFFFF;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1.05rem;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover, .btn-primary:active {
+    background-color: var(--hover-brown);
+}
+
+.card {
+    background-color: var(--surface-beige);
+    border: 1px solid var(--border-soft);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(62, 43, 28, 0.04);
+}
+
+.text-primary-brown {
+    color: var(--primary-brown);
+}

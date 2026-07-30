@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+
+        <div class="mb-3">
+            <a href="{{ url_for('main.inbox') }}" class="text-decoration-none text-primary-brown fw-semibold">&larr; Back to Inbox</a>
+        </div>
+
+        <div class="card d-flex flex-column border-0 shadow-sm" style="height: 70vh; border-radius: 16px; overflow: hidden;">
+
+            <div class="p-3 border-bottom d-flex align-items-center" style="background-color: var(--bg-cream); border-color: var(--border-soft) !important;">
+                <div style="width: 45px; height: 45px; border-radius: 50%; overflow: hidden;" class="me-3">
+                    {% if other_user.profile_image == 'default_avatar.png' %}
+                        <div style="width: 100%; height: 100%; background-color: var(--border-soft);"></div>
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/profiles/' + other_user.profile_image) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% endif %}
+                </div>
+                <div>
+                    <h6 class="m-0 fw-bold">{{ other_user.full_name }} - <span class="text-primary-brown">{{ role }}</span></h6>
+                    <small class="text-muted fw-semibold">Discussing: {{ item.title }}</small>
+                </div>
+            </div>
+
+            <div id="chat-box" class="flex-grow-1 p-3 overflow-auto" style="background-color: #FFFFFF;">
+                </div>
+
+            <div class="p-3 border-top" style="background-color: var(--bg-cream); border-color: var(--border-soft) !important;">
+                <div class="d-flex gap-2">
+                    <input type="text" id="msg-input" class="form-control m-0" placeholder="Type your message..." autocomplete="off">
+                    <button id="send-btn" class="btn btn-primary" style="width: auto; padding: 0 24px;">Send</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    const currentUserId = {{ current_user.id }};
+    const otherUserId = {{ other_user.id }};
+    const itemId = {{ item.id }};
+    const chatBox = document.getElementById('chat-box');
+    const msgInput = document.getElementById('msg-input');
+    const sendBtn = document.getElementById('send-btn');
+    let isUserScrolling = false;
+
+    chatBox.addEventListener('scroll', () => {
+        isUserScrolling = chatBox.scrollTop + chatBox.clientHeight < chatBox.scrollHeight - 10;
+    });
+
+    function loadMessages() {
+        fetch(`/api/messages/${itemId}/${otherUserId}`, { cache: 'no-store' })
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML = '';
+                data.forEach(msg => {
+                    const isMe = msg.sender_id === currentUserId;
+                    const alignment = isMe ? 'justify-content-end' : 'justify-content-start';
+                    const bgColor = isMe ? 'background-color: var(--primary-brown); color: white;' : 'background-color: var(--surface-beige); color: var(--text-dark);';
+
+                    chatBox.innerHTML += `
+                        <div class="d-flex ${alignment} mb-3">
+                            <div style="max-width: 75%;">
+                                <div class="p-3 rounded-4" style="${bgColor}">
+                                    ${msg.content}
+                                </div>
+                                <div class="text-muted mt-1" style="font-size: 0.75rem; text-align: ${isMe ? 'right' : 'left'};">
+                                    ${msg.timestamp}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (!isUserScrolling) {
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }
+            })
+            .catch(error => console.error("Polling error:", error));
+    }
+
+    document.addEventListener("visibilitychange", function() {
+        if (document.visibilityState === 'visible') {
+            loadMessages();
+        }
+    });
+
+    setInterval(loadMessages, 1500);
+    loadMessages();
+
+    function sendMessage() {
+        const text = msgInput.value.trim();
+        if (text === '') return;
+
+        msgInput.disabled = true;
+
+        fetch('/api/send_message', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                receiver_id: otherUserId,
+                item_id: itemId,
+                content: text
+            })
+        }).then(() => {
+            msgInput.value = '';
+            msgInput.disabled = false;
+            msgInput.focus();
+            isUserScrolling = false;
+            loadMessages();
+        });
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    msgInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    setInterval(loadMessages, 1500);
+    loadMessages();
+</script>
+{% endblock %}

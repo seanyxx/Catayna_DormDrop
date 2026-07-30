@@ -1,0 +1,40 @@
+
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-10 col-lg-8">
+        <h2 class="mb-4">Messages</h2>
+
+        <div class="list-group border-0 shadow-sm rounded-4 overflow-hidden">
+            {% for conv in conversations %}
+            <a href="{{ url_for('main.chat', item_id=conv.item.id, other_user_id=conv.other_user.id) }}" class="list-group-item list-group-item-action p-4 border-bottom" style="background-color: #FFFFFF; border-color: var(--border-soft) !important;">
+                <div class="d-flex align-items-center">
+
+                    <div style="width: 50px; height: 50px; border-radius: 50%; overflow: hidden; flex-shrink: 0;" class="me-3">
+                        {% if conv.other_user.profile_image == 'default_avatar.png' %}
+                            <div style="width: 100%; height: 100%; background-color: var(--border-soft);"></div>
+                        {% else %}
+                            <img src="{{ url_for('static', filename='uploads/profiles/' + conv.other_user.profile_image) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% endif %}
+                    </div>
+
+                    <div class="w-100 min-width-0">
+                        <div class="d-flex justify-content-between align-items-baseline mb-1">
+                            <h6 class="mb-0 fw-bold text-truncate pe-2">{{ conv.other_user.full_name }}</h6>
+                            <small class="text-muted text-nowrap" style="font-size: 0.8rem;">{{ conv.timestamp.strftime('%b %d, %I:%M %p') }}</small>
+                        </div>
+                        <p class="mb-1 text-primary-brown fw-semibold" style="font-size: 0.85rem;">Re: {{ conv.item.title }}</p>
+                        <p class="mb-0 text-muted text-truncate">{{ conv.last_message }}</p>
+                    </div>
+
+                </div>
+            </a>
+            {% else %}
+            <div class="p-5 text-center" style="background-color: var(--surface-beige);">
+                <h5 class="text-muted mb-0">No messages yet.</h5>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

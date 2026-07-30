@@ -1,0 +1,6 @@
+.venv/
+venv/
+instance/
+*.db
+__pycache__/
+.idea/

@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center mt-2">
+    <div class="col-12 col-lg-10">
+
+        <div class="row">
+            <div class="col-12 col-md-5 mb-4">
+
+                <div class="card p-4 text-center mb-4">
+                    <div class="mx-auto mb-3" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 4px solid var(--border-soft);">
+                        {% if current_user.profile_image == 'default_avatar.png' %}
+                            <img src="{{ url_for('static', filename='default_avatar.png') }}" alt="Default Avatar" style="width: 100%; height: 100%; object-fit: cover; background-color: var(--border-soft);">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='uploads/profiles/' + current_user.profile_image) }}" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% endif %}
+                    </div>
+                    <h2 class="mb-1">{{ current_user.full_name }}</h2>
+                    <p class="text-muted fw-semibold mb-0">{{ current_user.email }}</p>
+                    <p class="text-primary-brown mt-2 mb-0 fw-medium">"{{ current_user.bio }}"</p>
+                </div>
+
+                <div class="card p-4">
+                    <h5 class="mb-3">Edit Details</h5>
+                    <form method="POST" action="" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label small">Update Profile Picture</label>
+                            <input class="form-control form-control-sm" type="file" name="profile_image" accept="image/*">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small">Short Bio <span class="text-muted fw-normal">(Max 30 chars)</span></label>
+                            <input type="text" class="form-control form-control-sm" name="bio" value="{{ current_user.bio }}" maxlength="30" placeholder="Hello! I am a student here.">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">Save Changes</button>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-7">
+                <h4 class="mb-3">My Listings</h4>
+
+                <div class="row g-3">
+                    {% for item in items %}
+                    <div class="col-12 col-sm-6">
+                        <a href="{{ url_for('main.item_detail', item_id=item.id) }}" class="text-decoration-none text-dark">
+                            <div class="card h-100 overflow-hidden" style="border-radius: 12px; transition: transform 0.2s;">
+
+                                <div style="height: 150px; background-color: var(--border-soft);">
+                                    {% if item.image_path == 'default_item.png' %}
+                                        <div class="d-flex h-100 align-items-center justify-content-center text-muted fw-semibold">No Image</div>
+                                    {% else %}
+                                        <img src="{{ url_for('static', filename='uploads/items/' + item.image_path) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    {% endif %}
+                                </div>
+
+                                <div class="p-3">
+                                    <h6 class="fw-bold text-truncate mb-1" style="color: var(--text-dark);">{{ item.title }}</h6>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge text-bg-light" style="color: var(--primary-brown) !important; border: 1px solid var(--primary-brown);">₱{{ item.price }}</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </a>
+                    </div>
+                    {% else %}
+                    <div class="col-12">
+                        <div class="card p-4 text-center" style="border-style: dashed;">
+                            <h6 class="text-muted mb-2">You haven't posted any listings yet.</h6>
+                            <a href="{{ url_for('main.new_item') }}" class="btn btn-outline-primary btn-sm mt-2 mx-auto" style="width: max-content;">+ Create a Listing</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="m-0">Campus Market</h2>
+    <a href="{{ url_for('main.new_item') }}" class="btn btn-primary" style="width: auto; padding: 10px 20px;">+ List Item</a>
+</div>
+
+<div class="row g-4">
+    {% for item in items %}
+    <div class="col-12 col-md-6 col-lg-4">
+        <a href="{{ url_for('main.item_detail', item_id=item.id) }}" class="text-decoration-none text-dark">
+            <div class="card h-100 overflow-hidden" style="border-radius: 16px; transition: transform 0.2s;">
+
+                <div style="height: 200px; background-color: var(--border-soft);">
+                    {% if item.image_path == 'default_item.png' %}
+                        <div class="d-flex h-100 align-items-center justify-content-center text-muted fw-semibold">No Image</div>
+                    {% else %}
+                        <img src="{{ url_for('static', filename='uploads/items/' + item.image_path) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% endif %}
+                </div>
+
+                <div class="p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="fw-bold text-truncate pe-2 m-0" style="color: var(--text-dark);">{{ item.title }}</h5>
+                        <span class="badge text-bg-light fs-6" style="color: var(--primary-brown) !important; border: 1px solid var(--primary-brown);">₱{{ item.price }}</span>
+                    </div>
+                    <p class="small text-muted text-truncate mb-3">{{ item.description }}</p>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 24px; height: 24px; border-radius: 50%; overflow: hidden;">
+                            {% if item.owner.profile_image == 'default_avatar.png' %}
+                                <div style="width: 100%; height: 100%; background-color: var(--border-soft);"></div>
+                            {% else %}
+                                <img src="{{ url_for('static', filename='uploads/profiles/' + item.owner.profile_image) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% endif %}
+                        </div>
+                        <small class="fw-semibold text-muted">{{ item.owner.full_name }}</small>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+    {% else %}
+    <div class="col-12">
+        <div class="card p-5 text-center">
+            <h4 class="text-muted mb-2">The market is empty.</h4>
+            <p class="text-muted mb-0">Be the first to list an item!</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
